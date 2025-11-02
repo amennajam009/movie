@@ -56,6 +56,14 @@ export class FavoriteListComponent {
       this.favorites = [...this.favorites, movie];
     }
     this.localStorage.saveFavorites(this.favorites);
+
+    if (this.query) {
+    this.filteredFavorites = this.favorites.filter((m) =>
+      m.title.toLowerCase().includes(this.query)
+    );
+  } else {
+    this.filteredFavorites = [...this.favorites];
+  }
   }
 
   goToMovieDetail(id: number) {
