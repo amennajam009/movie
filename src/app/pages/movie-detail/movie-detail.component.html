@@ -1,0 +1,160 @@
+<!-- Loading & Error States -->
+<div *ngIf="loading" class="flex justify-center items-center py-20">
+  <div
+    class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"
+  ></div>
+  <span class="ml-4 text-white font-medium">Loading movies...</span>
+</div>
+
+<div *ngIf="error" class="text-center text-red-500 py-10 text-lg">
+  {{ error }}
+</div>
+
+<!-- Movie Detail -->
+<ng-container *ngIf="!loading && movie as m">
+  <div
+    class="relative min-h-screen md:min-h-[600px] bg-cover bg-center bg-no-repeat"
+    [ngStyle]="{
+      'background-image': 'url(' + img(m.backdrop_path, 'original') + ')'
+    }"
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"
+    ></div>
+
+    <!-- Back Button -->
+    <button
+      routerLink="/movies"
+      class="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-md bg-black/50 hover:bg-black/70 text-gray-200 hover:text-white backdrop-blur-sm transition"
+    >
+      <i class="fas fa-arrow-left"></i>
+      <span class="font-medium">Back</span>
+    </button>
+
+    <!-- Movie Info -->
+    <div
+      class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 md:pt-40 pb-12 text-center md:text-left"
+    >
+      <img
+        [src]="img(m.poster_path, 'w500')"
+        [alt]="m.title"
+        class="w-40 sm:w-48 md:w-64 rounded-xl shadow-2xl border border-gray-700 mx-auto md:mx-0"
+      />
+
+      <div class="text-white space-y-4 max-w-2xl">
+        <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight">
+          {{ m.title }}
+        </h1>
+
+        <div
+          class="flex flex-wrap justify-center md:justify-start gap-3 text-gray-300 text-sm md:text-base"
+        >
+          <span *ngIf="m.release_date">{{
+            m.release_date | date : "mediumDate"
+          }}</span>
+          <span *ngIf="m.runtime">• {{ toHM(m.runtime) }}</span>
+          <span *ngIf="m.genres?.length">• {{ getNames(m.genres) }}</span>
+        </div>
+
+        <div
+          class="flex justify-center md:justify-start items-center gap-2 text-yellow-400 text-lg"
+        >
+          ⭐ <strong>{{ m.vote_average | number : "1.1-1" }}</strong>
+          <span class="text-gray-300 text-sm" *ngIf="m.vote_count">
+            ({{ m.vote_count | number }})
+          </span>
+        </div>
+
+        <div
+          class="flex flex-wrap justify-center md:justify-start gap-3 text-sm mt-4"
+        >
+          <a
+            *ngIf="m.imdb_id"
+            [href]="'https://www.imdb.com/title/' + m.imdb_id"
+            target="_blank"
+            rel="noopener"
+            class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-md font-semibold transition"
+          >
+            IMDb
+          </a>
+
+          <a
+            *ngIf="m.homepage"
+            [href]="m.homepage"
+            target="_blank"
+            rel="noopener"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition"
+          >
+            Homepage
+          </a>
+
+          <span *ngIf="m.status" class="text-gray-300">• {{ m.status }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="max-w-6xl mx-auto px-6 py-10 text-gray-200">
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-3 border-l-4 border-indigo-500 pl-3">
+        Overview
+      </h2>
+      <p class="text-gray-300 leading-relaxed text-base md:text-lg">
+        {{ m.overview || "No overview available." }}
+      </p>
+    </section>
+
+    <!-- Info Grid -->
+    <section
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-gray-300"
+    >
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Original Title</h3>
+        <p>{{ m.original_title }}</p>
+      </div>
+
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+        *ngIf="m.spoken_languages?.length"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Languages</h3>
+        <p>{{ getNames(m.spoken_languages) }}</p>
+      </div>
+
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+        *ngIf="m.production_countries?.length"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Production Countries</h3>
+        <p>{{ getNames(m.production_countries) }}</p>
+      </div>
+
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+        *ngIf="m.production_companies?.length"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Production Companies</h3>
+        <p>{{ getNames(m.production_companies) }}</p>
+      </div>
+
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+        *ngIf="m.budget !== undefined"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Budget</h3>
+        <p>{{ m.budget | currency : "USD" }}</p>
+      </div>
+
+      <div
+        class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:bg-gray-900 transition"
+        *ngIf="m.revenue !== undefined"
+      >
+        <h3 class="text-indigo-400 font-semibold mb-2">Revenue</h3>
+        <p>{{ m.revenue | currency : "USD" }}</p>
+      </div>
+    </section>
+  </div>
+</ng-container>

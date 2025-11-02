@@ -32,12 +32,10 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+"assets": [
+  "src/favicon.ico",
+  { "glob": "**/*", "input": "src/assets", "output": "assets" }
+],
             "styles": [
               "src/styles.scss"
             ],
@@ -105,5 +103,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

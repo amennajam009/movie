@@ -1,0 +1,117 @@
+<app-hero-section></app-hero-section>
+
+<!-- Movie Grid Section -->
+<div
+  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-6 max-w-7xl mx-auto"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="300"
+  (scrolled)="onScrollDown()"
+>
+  <!-- Movie Card -->
+  <div
+    *ngFor="let movie of movies"
+    (click)="goToMovieDetail(movie.id)"
+    class="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-900 border border-gray-800 shadow-lg hover:shadow-indigo-500/20 transition-all duration-300"
+  >
+    <!-- Poster -->
+    <img
+      [src]="getImageUrl(movie.poster_path)"
+      [alt]="movie.title"
+      class="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
+    />
+
+    <!-- Overlay -->
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500"
+    ></div>
+
+    <!-- Movie Info -->
+    <div
+      class="absolute bottom-0 left-0 w-full p-4 text-white space-y-2 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500"
+    >
+      <h3 class="text-lg font-semibold truncate">{{ movie.title }}</h3>
+      <p class="text-sm text-gray-300 line-clamp-2">{{ movie.overview }}</p>
+
+      <div class="flex items-center justify-between text-sm mt-2">
+        <span class="flex items-center gap-1 text-yellow-400 font-semibold">
+          ⭐ {{ movie.vote_average }}
+        </span>
+        <span class="text-gray-400">
+          {{ movie.release_date | date : "yyyy" }}
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between mt-3">
+        <!-- Favorite Button -->
+        <button
+          (click)="toggleFavorite(movie); $event.stopPropagation()"
+          class="text-gray-300 hover:text-red-500 transition-colors duration-300"
+        >
+          <i
+            [class]="
+              isFavorite(movie.id)
+                ? 'fas fa-heart text-red-500'
+                : 'far fa-heart'
+            "
+          ></i>
+        </button>
+
+        <button
+          class="text-xs px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition"
+        >
+          ▶ Play
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- spinner + no data found -->
+<div class="relative flex flex-col items-center justify-center">
+  <div *ngIf="loading" class="flex justify-center items-center py-20">
+    <div
+      class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"
+    ></div>
+    <span class="ml-4 text-white-lg font-medium">Loading movies...</span>
+  </div>
+  <div
+    *ngIf="!loading && movies?.length === 0"
+    class="text-center py-20 text-gray-400 text-lg"
+  >
+    No movies found. Try searching something else!
+  </div>
+</div>
+
+<!-- Pagination -->
+<div
+  *ngIf="totalPages > 1"
+  class="flex justify-center items-center gap-4 mt-8 text-gray-200 mb-4"
+>
+  <button
+    (click)="go(page - 1)"
+    [disabled]="page <= 1"
+    class="px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-40 transition"
+  >
+    Prev
+  </button>
+
+  <span class="text-sm font-medium">
+    Page <span class="text-indigo-400">{{ page }}</span> / {{ totalPages }}
+  </span>
+
+  <button
+    (click)="go(page + 1)"
+    [disabled]="page >= totalPages"
+    class="px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-40 transition"
+  >
+    Next
+  </button>
+</div>
+
+<!-- Results Count -->
+<p *ngIf="totalResults" class="text-center text-gray-400 mb-4">
+  Found
+  <span class="text-indigo-400 font-semibold">{{ totalResults | number }}</span>
+  results
+</p>

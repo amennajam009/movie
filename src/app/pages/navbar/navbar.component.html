@@ -1,0 +1,86 @@
+<header
+  class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md"
+>
+  <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between">
+      <!-- Left Section -->
+      <div class="flex items-center gap-8">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
+          >
+            <span class="text-primary-foreground font-bold text-lg">▶</span>
+          </div>
+          <h1 class="text-2xl font-bold text-white">CineMax</h1>
+        </div>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex gap-8">
+          <a
+            *ngFor="let item of navItems"
+            [routerLink]="item.path"
+            routerLinkActive="text-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-white hover:text-primary transition-colors font-medium text-sm"
+          >
+            {{ item.label }}
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right Section -->
+      <div class="flex items-center gap-4">
+        <!-- Search -->
+        <div
+          class="hidden sm:flex items-center bg-[#1B2432] rounded-full px-4 py-2 border border-blue-500/30 focus-within:ring-2 focus-within:ring-blue-500/60 transition"
+        >
+         <i class="fa-solid fa-magnifying-glass text-blue-400 text-sm"></i>
+          <input
+            [(ngModel)]="query"
+            (keyup.enter)="onSearch()"
+            type="text"
+            placeholder="Search movies..."
+            class="bg-transparent border-0 outline-none ml-3 text-sm text-blue-100 placeholder-blue-white w-40 focus:w-56 transition-all duration-300"
+          />
+        </div>
+
+        <!-- Custom Buttons -->
+        <button class="btn-icon">
+          <i class="fa-solid fa-bell text-blue-400 text-sm hover:text-blue-300 transition"></i>
+        </button>
+
+        <button class="btn-icon">
+          <i class="fa-solid fa-user text-blue-400 text-sm hover:text-blue-300 transition"></i>
+        </button>
+
+        <button class="btn-icon md:hidden" (click)="toggleMenu()">
+          <i class="fa-solid fa-bars text-blue-400 text-sm hover:text-blue-300 transition"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <nav *ngIf="isOpen" class="md:hidden mt-4 flex flex-col gap-4 pb-4">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.path"
+        class="text-white hover:text-primary transition-colors font-medium"
+      >
+        {{ item.label }}
+      </a>
+    <!-- search -->
+      <div
+        class="flex items-center bg-[#1B2432] rounded-full px-3 py-2 border border-blue-500/30 focus-within:ring-2 focus-within:ring-blue-500/60 transition w-64 sm:w-auto"
+      >
+         <i class="fa-solid fa-magnifying-glass text-blue-400 text-sm"></i>
+        <input
+          [(ngModel)]="query"
+          (keyup.enter)="onSearch()"
+          type="text"
+          placeholder="Search movies..."
+          class="bg-transparent border-0 outline-none ml-2 text-sm text-blue-100 placeholder-blue-white w-full focus:w-full sm:w-56 transition-all duration-300"
+        />
+      </div>
+    </nav>
+  </div>
+</header>
